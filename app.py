@@ -32,64 +32,88 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # The import must be done after db initialization due to circular import issue
-from models import Imagen
+from models import Restaurant, Review
 
 @app.route('/', methods=['GET'])
 def index():
     print('Request for index page received')
-    imagenes = Imagen.query.all()
-    return render_template('index.html', imagenes=imagenes)
+    restaurants = Restaurant.query.all()
+    return render_template('index.html', restaurants=restaurants)
 
-@app.route('/crear_imagen_manualmente', methods=['GET'])
-def crear_imagen_manualmente():
-    print('Peticion para acceder a la prueba de pagina principal')
-    return render_template('crear_imagen_manualmente.html')
+@app.route('/<int:id>', methods=['GET'])
+def details(id):
+    restaurant = Restaurant.query.where(Restaurant.id == id).first()
+    reviews = Review.query.where(Review.restaurant == id)
+    return render_template('details.html', restaurant=restaurant, reviews=reviews)
+
+@app.route('/create', methods=['GET'])
+def create_restaurant():
+    print('Request for add restaurant page received')
+    return render_template('create_restaurant.html')
 
 @app.route('/add', methods=['POST'])
 @csrf.exempt
-def add_imagen():
+def add_restaurant():
     try:
-        username = request.values.get('username') #username
-        nombre_archivo = request.values.get('nombre_archivo') #nombre_archivo
-        n_pixeles_total = request.values.get('n_pixeles_total') #n_pixeles_total
-        tipo_transformacion = request.values.get('tipo_transformacion') #tipo_transformacion
-        n_pixeles_azules = request.values.get('n_pixeles_azules') #n_pixeles_azules
-        n_pixeles_verdes = request.values.get('n_pixeles_verdes') #n_pixeles_verdes
-        n_pixeles_rojos = request.values.get('n_pixeles_rojos') #n_pixeles_rojos
-        fecha = request.values.get('fecha') #fecha
+        name = request.values.get('restaurant_name')
+        street_address = request.values.get('street_address')
+        description = request.values.get('description')
     except (KeyError):
         # Redisplay the question voting form.
-        return render_template('add_imagen.html', {
-            'error_message': "You must include a username, filename, number of pixeles, transformation types and number of blue, green and red and the date at least*",
+        return render_template('add_restaurant.html', {
+            'error_message': "You must include a restaurant name, address, and description",
         })
     else:
-        imagen = Imagen()
-        imagen.user_name = username
-        imagen.nombre_archivo = nombre_archivo
-        imagen.n_pixeles_total = n_pixeles_total
-        imagen.tipo_transformacion = tipo_transformacion
-        imagen.n_pixeles_azules = n_pixeles_azules
-        imagen.n_pixeles_verdes = n_pixeles_verdes
-        imagen.n_pixeles_rojos = n_pixeles_rojos
-        imagen.fecha = fecha
-        db.session.add(imagen)
+        restaurant = Restaurant()
+        restaurant.name = name
+        restaurant.street_address = street_address
+        restaurant.description = description
+        db.session.add(restaurant)
         db.session.commit()
 
-        return redirect(url_for('index'))
+        return redirect(url_for('details', id=restaurant.id))
 
-@app.route('/<int:id>', methods=['POST'])
+@app.route('/review/<int:id>', methods=['POST'])
 @csrf.exempt
-def borrar(id):
-    imagen = Imagen.query.get(id)
-    if imagen:
-        # Also delete related reviews or images if needed (cascade manually if not using ON DELETE CASCADE in DB)
-        Imagen.query.filter_by(imagen=id).delete()
-        db.session.delete(imagen)
-        db.session.commit()
-        return redirect(url_for('index'))
+def add_review(id):
+    try:
+        user_name = request.values.get('user_name')
+        rating = request.values.get('rating')
+        review_text = request.values.get('review_text')
+    except (KeyError):
+        #Redisplay the question voting form.
+        return render_template('add_review.html', {
+            'error_message': "Error adding review",
+        })
     else:
-        return f"No se encontró ningún restaurante con id {id}", 404
-    
+        review = Review()
+        review.restaurant = id
+        review.review_date = datetime.now()
+        review.user_name = user_name
+        review.rating = int(rating)
+        review.review_text = review_text
+        db.session.add(review)
+        db.session.commit()
+
+    return redirect(url_for('details', id=id))
+
+@app.context_processor
+def utility_processor():
+    def star_rating(id):
+        reviews = Review.query.where(Review.restaurant == id)
+
+        ratings = []
+        review_count = 0
+        for review in reviews:
+            ratings += [review.rating]
+            review_count += 1
+
+        avg_rating = sum(ratings) / len(ratings) if ratings else 0
+        stars_percent = round((avg_rating / 5.0) * 100) if review_count > 0 else 0
+        return {'avg_rating': avg_rating, 'review_count': review_count, 'stars_percent': stars_percent}
+
+    return dict(star_rating=star_rating)
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -97,6 +121,3 @@ def favicon():
 
 if __name__ == '__main__':
     app.run()
-
-
-
