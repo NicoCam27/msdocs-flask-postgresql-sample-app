@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Crear Imagen Manualmente{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+      body {
+          min-height: 75rem;
+          padding-top: 4.5rem;
+      }
+  </style>
+{% endblock %}
+{% block content %}
+    <h1>Crea nueva imagen</h1>
+
+    
+    <form method="POST" action="{{ url_for('add_imagen') }}">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="nombre_archivo" class="form-label">Nombre del archivo</label>
+            <input type="text" class="form-control" id="nombre_archivo" name="nombre_archivo" required>
+        </div>
+        <div class="mb-3">
+            <label for="n_pixeles_total" class="form-label">Numero de pixeles total</label>
+            <input type="text" class="form-control" id="n_pixeles_total" name="n_pixeles_total" required>
+        </div>
+        <div class="mb-3">
+            <label for="tipo_transformacion" class="form-label">Tipo de transformacion</label>
+            <input type="text" class="form-control" id="tipo_transformacion" name="tipo_transformacion" required>
+        </div>
+        <div class="mb-3">
+            <label for="n_pixeles_azules" class="form-label">Numero de pixeles azules</label>
+            <input type="text" class="form-control" id="n_pixeles_azules" name="n_pixeles_azules">
+        </div>
+        <div class="mb-3">
+            <label for="n_pixeles_verdes" class="form-label">Numero de pixeles verdes</label>
+            <input type="text" class="form-control" id="n_pixeles_verdes" name="n_pixeles_verdes">
+        </div>
+        <div class="mb-3">
+            <label for="n_pixeles_rojos" class="form-label">Numero de pixeles rojos</label>
+            <input type="text" class="form-control" id="n_pixeles_rojos" name="n_pixeles_rojos">
+        </div>
+        <div class="mb-3">
+            <label for="fecha" class="form-label fw-bold">Fecha</label>
+            <input type="datetime-local" class="form-control" id="fecha" name="fecha" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="cancel" class="btn btn-primary">Cancel</button>
+    </form>
+{% endblock %}
+    
