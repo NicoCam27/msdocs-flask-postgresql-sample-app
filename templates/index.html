@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Restaurant List{% endblock %}
+{% block title %}Lista de Imagenes{% endblock %}
 {% block head %}
     {{ super() }}
     <style>
@@ -41,32 +41,47 @@
   </style>
 {% endblock %}
 {% block content %}
-      <h1>Restaurants</h1>
+      <h1>Imagenes</h1>
 
       {% if True %}
           <table class="table">
               <thead>
                   <tr>
-                      <th>Name</th>
-                      <th>Rating</th>
-                      <th class="text-end">Details</th>
+                      <th>Usuario</th>
+                      <th>Nombre del archivo</th>
+                      <th>Numero de pixeles Total</th>
+                      <th>Tipo Transforacion</th>
+                      <th>Numero de pixeles azules</th>
+                      <th>Numero de pixeles verdes</th>
+                      <th>Numero de pixeles rojos</th>
+                      <th>Fecha</th>
+                      <th class="text-end"></th>
                   </tr>
               </thead>
               <tbody>
-                  {% for restaurant in restaurants %}
+                  {% for imagen in imagenes %}
                       <tr>
-                          <td>{{ restaurant.name }}</td>
-                          <td>{% include "star_rating.html" %}</td>
-                          <td class="text-end"><a href="{{ url_for('details', id=restaurant.id) }}" class="btn btn-sm btn-primary">Details</a></td>
+                          <td>{{ imagen.user_name }}</td>
+                          <td>{{ imagen.nombre_archivo }}</td>
+                          <td>{{ imagen.n_pixeles_total }}</td>
+                          <td>{{ imagen.tipo_transformacion }}</td>
+                          <td>{{ imagen.n_pixeles_azules }}</td>
+                          <td>{{ imagen.n_pixeles_verdes }}</td>
+                          <td>{{ imagen.n_pixeles_rojos }}</td>
+                          <td>{{ imagen.fecha }}</td>
+                          <td class="text-end">
+                            <form action="{{ url_for('borrar', id=imagen.id) }}" method="post">
+                              <button type="submit">Eliminar</button>
+                            </form>
+                          </td>
                       </tr>
                   {% endfor %}
               </tbody>
           </table>
       {% else %}
-          <p>No restaurants exist.  Select Add new restaurant to add one.</p>
+          <p>No existen imagenes subidas.</p>
       {% endif %}
-
       <div class="d-flex justify-content-end">
-              <a href="{{ url_for('create_restaurant') }}" class="btn btn-success px-4 gap-3">Add new restaurant</a>
+        <a href="{{ url_for('crear_imagen_manualmente') }}" class="btn btn-success px-4 gap-3">Crear imagen manualmente</a>
       </div>
 {% endblock %}
