@@ -6,6 +6,75 @@
       body {
           min-height: 75rem;
           padding-top: 4.5rem;
+          background-image: url('{{ url_for('static', filename='images/bg4.png') }}');
+          /*background-size: cover;  /* This ensures the image covers the entire background */
+          background-position: center;  /* This centers the image */
+          /*background-repeat: no-repeat;  /* Prevents the image from repeating */
+          font-family: Arial, sans-serif;
+      }
+
+      h1 {
+          text-align: center;
+          color: white;
+          margin-bottom: 2rem;
+          text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .table {
+          width: 100%;
+          margin: 0 auto;
+          background-color: rgba(255, 255, 255, 0.8);  /* Semi-transparent background */
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          border-collapse: collapse;
+      }
+
+      .table th, .table td {
+          padding: 12px 15px;
+          text-align: left;
+          font-size: 16px;
+          color: #333;
+      }
+
+      .table th {
+          background-color: #007bff;  /* Blue header */
+          color: white;
+          font-weight: bold;
+          text-transform: uppercase;
+      }
+
+      .table tbody tr:nth-child(odd) {
+          background-color: #f2f2f2;  /* Light grey for odd rows */
+      }
+
+      .table tbody tr:nth-child(even) {
+          background-color: #ffffff;  /* White for even rows */
+      }
+
+      .table tbody tr:hover {
+          background-color: #e0e0e0;  /* Highlight row on hover */
+      }
+
+      .table td button {
+          background-color: #dc3545;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+
+      .table td button:hover {
+          background-color: #c82333;
+      }
+
+      .table td button:active {
+          background-color: #bd2130;
+      }
+
+      .text-end {
+          text-align: right;
       }
 
       .score {
@@ -41,7 +110,7 @@
   </style>
 {% endblock %}
 {% block content %}
-      <h1>Imagenes</h1>
+      <h1>Lista de imagenes transformadas</h1>
 
       {% if True %}
           <table class="table">
@@ -81,7 +150,4 @@
       {% else %}
           <p>No existen imagenes subidas.</p>
       {% endif %}
-      <div class="d-flex justify-content-end">
-        <a href="{{ url_for('crear_imagen_manualmente') }}" class="btn btn-success px-4 gap-3">Crear imagen manualmente</a>
-      </div>
 {% endblock %}
