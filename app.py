@@ -2,7 +2,7 @@ import os
 from zoneinfo import ZoneInfo
 import ntplib
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo  # Use 'pytz' if Python < 3.9
+from zoneinfo import ZoneInfo
 
 from flask import Flask, redirect, render_template, request, send_from_directory, url_for
 from flask_migrate import Migrate
@@ -63,7 +63,6 @@ def add_imagen():
         n_pixeles_verdes = request.values.get('n_pixeles_verdes') #n_pixeles_verdes
         n_pixeles_rojos = request.values.get('n_pixeles_rojos') #n_pixeles_rojos
     except (KeyError):
-        # Redisplay the question voting form.
         return render_template('add_imagen.html', {
             'error_message': "You must include a username, filename, number of pixeles, transformation types and number of blue, green and red and the date at least*",
         })
@@ -122,7 +121,6 @@ def api_add_imagen():
 def borrar(id):
     imagen = Imagen.query.get(id)
     if imagen:
-        # Also delete related reviews or images if needed (cascade manually if not using ON DELETE CASCADE in DB)
         db.session.delete(imagen)
         db.session.commit()
         return redirect(url_for('index'))
