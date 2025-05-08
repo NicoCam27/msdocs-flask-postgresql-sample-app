@@ -124,6 +124,7 @@
                       <th>Numero de pixeles verdes</th>
                       <th>Numero de pixeles rojos</th>
                       <th>Fecha</th>
+                      <th class="text-end"></th>
                   </tr>
               </thead>
               <tbody>
@@ -137,6 +138,11 @@
                           <td>{{ imagen.n_pixeles_verdes }}</td>
                           <td>{{ imagen.n_pixeles_rojos }}</td>
                           <td>{{ imagen.fecha }}</td>
+                          <td class="text-end">
+                            <form action="{{ url_for('borrar', id=imagen.id) }}" method="post">
+                              <button type="submit">Eliminar</button>
+                            </form>
+                          </td>
                       </tr>
                   {% endfor %}
               </tbody>
