@@ -102,39 +102,11 @@ def api_add_imagen():
     madrid_dt = utc_dt.astimezone(ZoneInfo("Europe/Madrid"))
     formatted = madrid_dt.strftime("%Y-%m-%d %H:%M:%S")
 
-    tipo_transformacion_final = ""
-
-    if data.get('tipo_transformacion') != "PREPROCESADO":
-        tipo_transformacion_final = data.get('tipo_transformacion')
-    else:
-        partes = data.get('nombre_archivo').split('_')
-        if len(partes) < 2:
-            tipo_transformacion_final = "tipo de transformacion no reconocido"
-        ultima_parte = partes[-1].split('.')[0].lower()  # Sin extensión
-        penultima_parte = partes[-2].lower()
-
-        if penultima_parte in ['rojo', 'verde', 'azul']:
-            if ultima_parte.startswith('u'):
-                try:
-                    valor_u = int(ultima_parte[1:])
-                    if 0 <= valor_u <= 255:
-                        tipo_transformacion_final = "identificacion_colores"
-                except ValueError:
-                    pass
-                
-        if 'px' in ultima_parte:
-            tipo_transformacion_final = "pixelado"
-        elif 'bn' in ultima_parte:
-            tipo_transformacion_final = "blanco y negro"
-        elif 'copia' in ultima_parte:
-            tipo_transformacion_final = "copia"
-
-
     imagen = Imagen(
         user_name=data.get('user_name'),
         nombre_archivo=data.get('nombre_archivo'),
         n_pixeles_total=data.get('n_pixeles_total'),
-        tipo_transformacion=tipo_transformacion_final,
+        tipo_transformacion=data.get('tipo_transformacion'),
         n_pixeles_azules=data.get('n_pixeles_azules'),
         n_pixeles_verdes=data.get('n_pixeles_verdes'),
         n_pixeles_rojos=data.get('n_pixeles_rojos'),
